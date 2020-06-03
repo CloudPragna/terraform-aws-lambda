@@ -110,7 +110,7 @@ variable "tracing_config" {
 variable "sqs_event_source_arn" {
   type        = string
   description = "Event source ARN of a SQS queue."
-  default = null
+  default     = null
 }
 
 variable "sqs_batch_size" {
