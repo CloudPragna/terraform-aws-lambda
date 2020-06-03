@@ -29,7 +29,7 @@ resource "aws_lambda_function" "this" {
       subnet_ids         = vpc_config.value.subnet_ids
     }
   }
-
+  # CKV_AWS_50: By Default this is Activated
   dynamic "tracing_config" {
     for_each = length(var.tracing_config) > 0 ? [var.tracing_config] : []
     content {
@@ -44,7 +44,6 @@ resource "aws_lambda_function" "this" {
       s3_bucket,
       s3_key,
       s3_object_version,
-
     ]
   }
   depends_on = [
