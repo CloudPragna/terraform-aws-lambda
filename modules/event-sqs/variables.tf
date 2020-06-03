@@ -19,7 +19,7 @@ variable "batch_size" {
   default     = 10
 }
 
-variable "enable_sqs" {
+variable "enable" {
   type        = bool
   description = "Conditionally enables this module for SQS events"
   default     = false

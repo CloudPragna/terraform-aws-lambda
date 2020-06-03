@@ -43,11 +43,15 @@ resource "aws_lambda_function" "this" {
       filename,
       s3_bucket,
       s3_key,
-      s3_object_version
+      s3_object_version,
 
     ]
   }
-
+  depends_on = [
+    aws_iam_role_policy_attachment.xray_attachment,
+    aws_iam_role_policy_attachment.cloudwatch_logs,
+    aws_iam_role_policy_attachment.vpc_attachment,
+  ]
 }
 
 data "aws_iam_policy_document" "assume_role_policy" {
@@ -75,7 +79,14 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_logs" {
 }
 
 resource "aws_iam_role_policy_attachment" "vpc_attachment" {
-  count      = length(var.vpc_config) > 0 ? 1 : 0
+  count      = length(var.vpc_config) > 0 && var.create_lambda ? 1 : 0
   role       = aws_iam_role.this[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+
+resource "aws_iam_role_policy_attachment" "xray_attachment" {
+  count      = length(var.tracing_config) > 0 && var.create_lambda ? 1 : 0
+  role       = aws_iam_role.this[0].name
+  policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
 }
