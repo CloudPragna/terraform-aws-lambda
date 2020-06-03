@@ -5,15 +5,20 @@
 Configure the Lambda function with all required variables:
 
 ```hcl
-module "lambda" {
-  source        = "./modules/lambda"
+module "lambda_with_sqs" {
+  source        = "../"
   create_lambda = true
-  description   = "Example Lambda Function"
-  function_name = "example123"
-  runtime       = "nodejs12.x"
-  handler       = "index.my_handler"
-  s3_bucket     = "xxxxxxxxxxx"
-  s3_key        = "packages/index.zip"
+  description   = var.description
+  function_name = var.function_name
+  runtime       = var.runtime
+  handler       = var.handler
+  s3_bucket     = var.s3_bucket
+  s3_key        = var.s3_key
+  environment = var.environment
+  vpc_config = var.vpc_config
+  tracing_config = var.tracing_config
+  sqs_enable = var.sqs_enable
+  sqs_event_source_arn = var.sqs_event_source_arn
 }
 ```
 
@@ -22,13 +27,11 @@ module "lambda" {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12 |
+| aws | > 2.14.0 |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| aws | n/a |
+No provider.
 
 ## Inputs
 
@@ -48,6 +51,10 @@ module "lambda" {
 | s3\_key | The S3 key of an object containing the function's deployment package. Conflicts with filename. | `string` | `null` | no |
 | s3\_object\_version | The object version containing the function's deployment package. Conflicts with filename. | `string` | `null` | no |
 | source\_code\_hash | Used to trigger updates. Must be set to a base64-encoded SHA256 hash of the package file specified with either filename or s3\_key. The usual way to set this is filebase64sha256('file.zip') where 'file.zip' is the local filename of the lambda function source archive. | `string` | `null` | no |
+| sqs\_batch\_size | The largest number of records that Lambda will retrieve from your event source at the time of invocation. Defaults to 10 for SQS. | `number` | `10` | no |
+| sqs\_enable | Conditionally enables this module for SQS events | `bool` | `false` | no |
+| sqs\_event\_source\_arn | Event source ARN of a SQS queue. | `string` | `null` | no |
+| sqs\_event\_source\_mapping\_enabled | Determines if the mapping will be enabled on creation. Defaults to true. | `bool` | `true` | no |
 | tags | A mapping of tags to assign to the Lambda function. | `map(string)` | `{}` | no |
 | timeout | The amount of time your Lambda Function has to run in seconds. Defaults to 3. | `number` | `30` | no |
 | tracing\_config | Can be either PassThrough or Active. If PassThrough, Lambda will only trace the request from an upstream service if it contains a tracing header with sampled=1, If Active, Lambda will respect any tracing header it receives from an upstream service. If no tracing header is received, Lambda will call X-Ray for a tracing decision | `map(string)` | <pre>{<br>  "mode": "Active"<br>}</pre> | no |

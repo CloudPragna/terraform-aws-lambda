@@ -35,7 +35,7 @@ module "event_sqs" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | batch\_size | The largest number of records that Lambda will retrieve from your event source at the time of invocation. Defaults to 10 for SQS. | `number` | `10` | no |
-| enable\_sqs | Conditionally enables this module for SQS events | `bool` | `false` | no |
+| enable | Conditionally enables this module for SQS events | `bool` | `false` | no |
 | event\_source\_arn | Event source ARN of a SQS queue. | `string` | n/a | yes |
 | event\_source\_mapping\_enabled | Determines if the mapping will be enabled on creation. Defaults to true. | `bool` | `true` | no |
 | function\_name | The name or the ARN of the Lambda function that will be subscribing to events. | `string` | n/a | yes |
